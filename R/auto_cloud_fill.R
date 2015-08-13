@@ -101,7 +101,7 @@ auto_cloud_fill <- function(data_dir, wrspath, wrsrow, start_date, end_date,
     if (!file_test('-d', dirname(out_name))) {
         stop('output folder does not exist')
     }
-    if (file_path_sans_ext(out_name) != out_name) {
+    if (tools:::file_path_sans_ext(out_name) != out_name) {
         stop('out_name should not have a file extension')
     }
 
@@ -175,7 +175,7 @@ auto_cloud_fill <- function(data_dir, wrspath, wrsrow, start_date, end_date,
     fill_QAs <- list()
     imgs <- list()
     for (img_file in img_files) {
-        masks_file <- paste0(file_path_sans_ext(img_file), '_masks.', ext)
+        masks_file <- paste0(tools:::file_path_sans_ext(img_file), '_masks.', ext)
         if (!file_test('-f', masks_file)) {
             masks_file <- gsub(suffix_re, paste0('_masks.', ext), img_file)
             if (file_test('-f', masks_file)) {
@@ -209,8 +209,7 @@ auto_cloud_fill <- function(data_dir, wrspath, wrsrow, start_date, end_date,
     # percent clear
     if (is.null(base_date)) {
         clear_row <- which(freq_table$value == 0)
-        base_img_index <- which(freq_table[clear_row, -1] == 
-                                max(freq_table[clear_row, -1]))
+        base_img_index <- which.max(freq_table[clear_row, -1])
     } else {
         base_date_diff <- lapply(img_dates, function(x) 
                                  as.duration(new_interval(x, base_date)))
