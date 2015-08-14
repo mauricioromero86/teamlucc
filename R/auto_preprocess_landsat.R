@@ -547,8 +547,8 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
 
             image_stack_masked <- image_stack
             image_stack_masked[image_stack_mask] <- NA
-            if(!is.na(summary(image_stack_masked)["Min.",][1])){
-              if (verbose) timer <- stop_timer(timer, label='"Image has all NAs')
+            if(is.na(summary(image_stack_masked)["Min.",][1])){
+              if (verbose) timer <- stop_timer(timer, label='"topocorr')
             }
             if(!is.na(summary(image_stack_masked)["Min.",][1])){
               if (ncell(image_stack_masked) > 500000) {
