@@ -547,60 +547,66 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
 
             image_stack_masked <- image_stack
             image_stack_masked[image_stack_mask] <- NA
-            if (ncell(image_stack_masked) > 500000) {
-                # Draw a sample for the Minnaert k regression. Note that 
-                # sampleRegular with cells=TRUE returns cell numbers in the 
-                # first column
-                sampleindices <- sampleRegular(image_stack_masked, size=500000, 
-                                               cells=TRUE)
-                sampleindices <- as.vector(sampleindices[, 1])
-            } else {
-                sampleindices <- NULL
+            if(!is.na(summary(image_stack_masked)["Min.",][1])){
+              if (verbose) timer <- stop_timer(timer, label='"Image has all NAs')
             }
-            # Remember that slopeaspect layers are scaled to INT2S, but 
-            # topographic_corr expects them as floats, so apply the scale factors 
-            # used in auto_setup_dem
-            slopeaspect_flt <- stack(raster(slopeaspect, layer=1) / 10000,
-                                     raster(slopeaspect, layer=2) / 1000)
-            image_stack_tc <- topographic_corr(image_stack_masked, 
-                                               slopeaspect_flt, meta$sunelev, 
-                                               meta$sunazimuth, 
-                                               method='minnaert_full', 
-                                               asinteger=TRUE, 
-                                               sampleindices=sampleindices)
-            if (!mask_output) {
-                # Add back in the original values of areas that were masked out 
-                # from the topographic correction:
-                image_stack_tc[image_stack_mask] <- image_stack[image_stack_mask]
-            }
-            image_stack <- image_stack_tc
-            
-            if (verbose) timer <- stop_timer(timer, label='topocorr')
+            if(!is.na(summary(image_stack_masked)["Min.",][1])){
+              if (ncell(image_stack_masked) > 500000) {
+                  # Draw a sample for the Minnaert k regression. Note that 
+                  # sampleRegular with cells=TRUE returns cell numbers in the 
+                  # first column
+                  sampleindices <- sampleRegular(image_stack_masked, size=500000, 
+                                                 cells=TRUE)
+                  sampleindices <- as.vector(sampleindices[, 1])
+              } else {
+                  sampleindices <- NULL
+              }
+              # Remember that slopeaspect layers are scaled to INT2S, but 
+              # topographic_corr expects them as floats, so apply the scale factors 
+              # used in auto_setup_dem
+              slopeaspect_flt <- stack(raster(slopeaspect, layer=1) / 10000,
+                                       raster(slopeaspect, layer=2) / 1000)
+              image_stack_tc <- topographic_corr(image_stack_masked, 
+                                                 slopeaspect_flt, meta$sunelev, 
+                                                 meta$sunazimuth, 
+                                                 method='minnaert_full', 
+                                                 asinteger=TRUE, 
+                                                 sampleindices=sampleindices)
+              if (!mask_output) {
+                  # Add back in the original values of areas that were masked out 
+                  # from the topographic correction:
+                  image_stack_tc[image_stack_mask] <- image_stack[image_stack_mask]
+              }
+              image_stack <- image_stack_tc
+              if (verbose) timer <- stop_timer(timer, label='topocorr')
+            }#if image has no clear land (i.e. everything is NA) then skip it
+           
         }
 
         ######################################################################
         # Write final data
-        if (verbose) timer <- start_timer(timer, label='writing data')
-
-        mask_stack_path <- paste0(file_path_sans_ext(output_filename), 
-                                  '_masks.', ext)
-        mask_stack <- writeRaster(stack(mask_stack[[1]], mask_stack[[2]]),
-                                  filename=mask_stack_path, 
-                                  overwrite=overwrite, datatype='INT2S')
-
-        image_stack <- writeRaster(image_stack, filename=output_filename, 
-                                   overwrite=overwrite, datatype='INT2S')
-        if (verbose) timer <- stop_timer(timer, label='writing data')
-
-        timer <- stop_timer(timer, label=paste('Preprocessing', image_basename))
-
-        close(log_file)
-
-        if (cleartmp) removeTmpFiles(h=1)
         
-        return(data.frame(file_base=file_base, file_format=file_format, 
-                          bands_file=output_filename, 
-                          masks_file=mask_stack_path, stringsAsFactors=FALSE))
+          if (verbose) timer <- start_timer(timer, label='writing data')
+          mask_stack_path <- paste0(file_path_sans_ext(output_filename), 
+                                    '_masks.', ext)
+          if(!is.na(summary(image_stack_masked)["Min.",][1])){
+            mask_stack <- writeRaster(stack(mask_stack[[1]], mask_stack[[2]]),
+                                      filename=mask_stack_path, 
+                                      overwrite=overwrite, datatype='INT2S')
+    
+            image_stack <- writeRaster(image_stack, filename=output_filename, 
+                                       overwrite=overwrite, datatype='INT2S')
+            if (verbose) timer <- stop_timer(timer, label='writing data')
+          }
+          
+          timer <- stop_timer(timer, label=paste('Preprocessing', image_basename))
+          close(log_file)
+          if (cleartmp) removeTmpFiles(h=1)
+          
+          return(data.frame(file_base=file_base, file_format=file_format, 
+                            bands_file=output_filename, 
+                            masks_file=mask_stack_path, stringsAsFactors=FALSE))
+        
     }
 
     return(ret)
