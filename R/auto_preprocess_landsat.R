@@ -548,7 +548,7 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
             image_stack_masked <- image_stack
             image_stack_masked[image_stack_mask] <- NA
             if(image_stack_masked@data@min[1]==Inf){
-              if (verbose) timer <- stop_timer(timer, label='"topocorr')
+              if (verbose) timer <- stop_timer(timer, label='topocorr')
             }
             if(!(image_stack_masked@data@min[1]==Inf)){
               if (ncell(image_stack_masked) > 500000) {
