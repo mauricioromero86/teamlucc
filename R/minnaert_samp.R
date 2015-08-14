@@ -138,7 +138,7 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     if (length(slopeclass) <= 5) {
         stop('insufficient sample size to develop k model - try changing slopeclass or sampleindices')
     }
-    slopeclass <- unique(c(0.01*pi/180, slopeclass))
+    slopeclass <- unique(c(0.001*pi/180, slopeclass))
 
     stopifnot(all((slopeclass >= 0) & slopeclass <= pi/2))
 
