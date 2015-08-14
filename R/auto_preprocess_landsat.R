@@ -547,10 +547,10 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
 
             image_stack_masked <- image_stack
             image_stack_masked[image_stack_mask] <- NA
-            if(is.na(summary(image_stack_masked)[1,1])){
+            if(is.na(image_stack_masked@data@min[1])){
               if (verbose) timer <- stop_timer(timer, label='"topocorr')
             }
-            if(!is.na(summary(image_stack_masked)[1,1])){
+            if(!is.na(image_stack_masked@data@min[1])){
               if (ncell(image_stack_masked) > 500000) {
                   # Draw a sample for the Minnaert k regression. Note that 
                   # sampleRegular with cells=TRUE returns cell numbers in the 
@@ -589,7 +589,7 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
           if (verbose) timer <- start_timer(timer, label='writing data')
           mask_stack_path <- paste0(file_path_sans_ext(output_filename), 
                                     '_masks.', ext)
-          if(!is.na(summary(image_stack_masked)[1,1])){
+          if(!is.na(image_stack_masked@data@min[1])){
             mask_stack <- writeRaster(stack(mask_stack[[1]], mask_stack[[2]]),
                                       filename=mask_stack_path, 
                                       overwrite=overwrite, datatype='INT2S')
