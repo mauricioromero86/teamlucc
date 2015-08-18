@@ -116,10 +116,11 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
                           IL.epsilon=0.000001, slopeclass=NULL, 
                           coverclass=NULL, sampleindices=NULL, DN_min=NULL, 
                           DN_max=NULL) {
-
+    delta_seq=0.1
+    while(length(slopeclass) <= 5 & delta_seq>0.001){
     if (is.null(slopeclass)) {
     ##New idea... lets make the slopeclass according to quantiles of the sampleindices
-        slopeclass <- setdiff(sort(unique(as.numeric(quantile(slope[sampleindices],seq(0.05,1,.05),na.rm=T)))),0)
+        slopeclass <- setdiff(sort(unique(as.numeric(quantile(slope[sampleindices],seq(delta_seq,1,delta_seq),na.rm=T)))),0)
         ##Lets forget about the old indices
         ##c(0.001,0.005,0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.8,1, 2, 3, 4, 5, 6, 8, 10, 12,15, 20, 25, 30, 45, 75,90) * (pi/180)
     }
@@ -139,6 +140,8 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     # The [-1] below is because clean_intervals only needs the upper limits
      lower_limit=slopeclass[-1]
     slopeclass <- clean_intervals(counts, slopeclass[-1], 100)
+    delta_seq=delta_seq/2
+    }
     if (length(slopeclass) <= 5) {
         stop('insufficient sample size to develop k model - try changing slopeclass or sampleindices')
     }
