@@ -137,7 +137,7 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     }
     
     # The [-1] below is because clean_intervals only needs the upper limits
-     lower_limit=slopeclass[-1]
+     lower_limit=slopeclass[1]
     slopeclass <- clean_intervals(counts, slopeclass[-1], 100)
     delta_seq=delta_seq/2
     }
