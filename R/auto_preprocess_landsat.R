@@ -375,7 +375,7 @@ build_mask_vrt <- function(file_base, mask_vrt_file, file_format) {
 auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE, 
                                     dem_path=NULL, aoi=NULL, output_path=NULL, 
                                     mask_type='fmask', mask_output=FALSE, 
-                                    n_cpus=1, cleartmp=FALSE, hrs_temp=3 overwrite=FALSE, 
+                                    n_cpus=1, cleartmp=FALSE, hrs_temp=3, overwrite=FALSE, 
                                     of="GTiff", ext='tif', notify=print, 
                                     verbose=FALSE) {
     if (grepl('_', prefix)) {
