@@ -421,7 +421,7 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
                     file_format=ls_files$file_formats,
                     .packages=c('rgeos', 'wrspathrow', 'tools',
                                 'gdalUtils', 'sp'),
-                    .inorder=FALSE, .combine=rbind) %dopar% {
+                    .inorder=FALSE, .combine=rbind) %do% {
         ######################################################################
         # Determine image basename for use in naming subsequent files
         meta <- get_metadata(file_base, file_format)
