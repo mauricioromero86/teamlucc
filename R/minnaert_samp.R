@@ -144,8 +144,7 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     if (length(slopeclass) <= 5) {
         stop('insufficient sample size to develop k model - try changing slopeclass or sampleindices')
     }
-    slopeclass <- unique(sort(c(lower_limit, slopeclass)))
-
+    slopeclass <- unique(sort(round(c(lower_limit, slopeclass),10))) #round to 10 decimal integers cause R is stupid and can't handle decimals well... to be fair no computer program can
     stopifnot(all((slopeclass >= 0) & slopeclass <= pi/2))
 
     # some inputs are in degrees, but we need radians
