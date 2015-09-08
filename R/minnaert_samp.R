@@ -187,7 +187,8 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
                         x_vals * (cos(sunzenith)/IL_vals) ^ K.all_vals
                     })
     # Don't correct flat areas
-    xout[K.all == 0 & !is.na(K.all)] <- x[K.all == 0 & !is.na(K.all)]
+    #No need to do this since ^0=1
+    #xout[K.all == 0 & !is.na(K.all)] <- x[K.all == 0 & !is.na(K.all)]
 
     if ((!is.null(DN_min)) || (!is.null(DN_max))) {
         xout <- calc(xout, fun=function(vals) {
