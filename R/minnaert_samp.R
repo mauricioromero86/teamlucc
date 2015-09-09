@@ -119,10 +119,11 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     delta_seq=0.1
     while(length(slopeclass) <= 5 & delta_seq>0.001){
     ##New idea... lets make the slopeclass according to quantiles of the sampleindices
+        if (is.null(slopeclass)) {
         slopeclass <- setdiff(sort(unique(as.numeric(quantile(slope[sampleindices],seq(delta_seq,1,delta_seq),na.rm=T)))),0)
         ##Lets forget about the old indices
         ##c(0.001,0.005,0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.8,1, 2, 3, 4, 5, 6, 8, 10, 12,15, 20, 25, 30, 45, 75,90) * (pi/180)
-    
+        }
 
     if (is.null(sampleindices)) {
         counts <- raster::freq(raster::cut(slope, slopeclass,
