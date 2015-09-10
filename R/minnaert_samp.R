@@ -123,10 +123,12 @@ minnaert_samp <- function(x, slope, aspect, sunelev, sunazimuth,
     ##c(0.001,0.005,0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.8,1, 2, 3, 4, 5, 6, 8, 10, 12,15, 20, 25, 30, 45, 75,90) * (pi/180)
         
            if (is.null(sampleindices)) {
+           SlopeValid=getValues(slope)[!is.na(getValues(x))] #Make sure we only get slopes that will actually be used!
            slopeclass <- setdiff(sort(unique(as.numeric(quantile(slope,seq(delta_seq,1,delta_seq),na.rm=T)))),0)
            }
            if (!is.null(sampleindices)) {
-           slopeclass <- setdiff(sort(unique(as.numeric(quantile(slope[sampleindices],seq(delta_seq,1,delta_seq),na.rm=T)))),0)
+           SlopeValid=getValues(slope)[sampleindices][!is.na(getValues(x)[sampleindices])]  #Make sure we only get slopes that will actually be used!
+           slopeclass <- setdiff(sort(unique(as.numeric(quantile(SlopeValid,seq(delta_seq,1,delta_seq),na.rm=T)))),0)
            }
         
 
