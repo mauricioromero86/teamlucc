@@ -160,6 +160,8 @@ call_cpp_cloud_fill <- function(cloudy, clear, cloud_mask, algorithm, dims,
     } else if (algorithm == "simple") {
         filled <- cloud_fill_simple(cloudy, clear, cloud_mask, dims, num_class, 
                                     cloud_nbh, DN_min, DN_max, verbose)
+        if (!is.null(DN_min)) filled[filled < DN_min] <- DN_min
+        if (!is.null(DN_max)) filled[filled > DN_max] <- DN_max
     } else {
         stop(paste0('unrecognized cloud fill algorithm "', algorithm, '"'))
     }
@@ -196,7 +198,7 @@ cloud_remove_R <- function(cloudy, clear, cloud_mask, out_name, algorithm,
             filled <- call_cpp_cloud_fill(cloudy_bl, clear_bl, cloud_mask_bl, 
                                           algorithm, dims, num_class, 
                                           min_pixel, max_pixel, cloud_nbh, 
-                                          DN_min, DN_max, verbose>1)
+                                          DN_min, DN_max, verbose>1) 
             out <- writeValues(out, filled, bs$row[block_num])
         }
         out <- writeStop(out)
