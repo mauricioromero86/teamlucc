@@ -551,7 +551,7 @@ auto_preprocess_landsat <- function(image_dirs, prefix, tc=FALSE,
               if (verbose) timer <- stop_timer(timer, label='topocorr')
             }
             NonMissings=sum(!is.na(getValues(image_stack_masked[[1]])))
-            SlopeValues=length(unique(getValues(slope)[!is.na(getValues(x))]))
+            SlopeValues=length(unique(getValues(raster(slopeaspect, layer=1))[!is.na(getValues(image_stack_masked[[1]]))]))
             if(NonMissings!=0 & SlopeValues>6){
               if (ncell(image_stack_masked) > 500000) {
                   # Draw a sample for the Minnaert k regression. Note that 
